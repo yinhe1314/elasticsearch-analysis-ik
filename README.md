@@ -9,7 +9,7 @@ Analyzer: `ik_smart` , `ik_max_word` , Tokenizer: `ik_smart` , `ik_max_word`
 --------
 参考(https://github.com/PeterMen/elasticsearch-analysis-ik)。
 
-目前仅修改了6.X，7.X类似。
+目前仅修改了6.6.2，6.X和7.X类似。
 
 1.原本在IK中，所有索引共用一个词典，热更新词库也是对所有的索引有效。
 
