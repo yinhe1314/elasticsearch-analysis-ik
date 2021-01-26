@@ -76,8 +76,8 @@ class AnalyzeContext {
 	//分词器配置项
 	private Configuration cfg;
 
-	// TODO 词典id
-	private String dictId;
+	// TODO 词典key
+	private String dictKey;
 
     public AnalyzeContext(Configuration configuration){
         this.cfg = configuration;
@@ -88,11 +88,8 @@ class AnalyzeContext {
     	this.pathMap = new HashMap<Integer , LexemePath>();    	
     	this.results = new LinkedList<Lexeme>();
 
-    	// TODO dictId设值
-		if (configuration.getDictUrl() != null) {
-			String[] urls = configuration.getDictUrl().split("/");
-			this.dictId = urls[urls.length - 1];
-		}
+    	// TODO 设值词典key
+		this.dictKey = configuration.getDictKey();
     }
     
     int getCursor(){
@@ -403,9 +400,9 @@ class AnalyzeContext {
 	}
 
 	/**
-	 * 获取词典id
+	 * TODO 获取词典key
 	 */
-	public String getDictId() {
-		return dictId;
+	public String getDictKey() {
+		return dictKey;
 	}
 }

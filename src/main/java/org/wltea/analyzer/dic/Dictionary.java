@@ -177,15 +177,12 @@ public class Dictionary {
 	 */
 	public void initDict(Configuration cfg) {
 		String dictUrl = cfg.getDictUrl();
-		if (dictUrl != null && !"".equals(dictUrl)) {
-			String[] urls = dictUrl.split("/");
-			String id = urls[urls.length - 1];
-			if (!_DictMap.containsKey(id)) {
-				Runnable dictMonitor = new DictMonitor(dictUrl);
-				// 先执行一次获取词库
-				dictMonitor.run();
-				pool.scheduleAtFixedRate(dictMonitor, 10, 60, TimeUnit.SECONDS);
-			}
+		String dictKey = cfg.getDictKey();
+		if (!_DictMap.containsKey(dictKey)) {
+			Runnable dictMonitor = new DictMonitor(dictUrl, dictKey);
+			// 先执行一次获取词库
+			dictMonitor.run();
+			pool.scheduleAtFixedRate(dictMonitor, 10, 60, TimeUnit.SECONDS);
 		}
 	}
 
@@ -360,7 +357,7 @@ public class Dictionary {
 
 	/**
 	 * 检索匹配主词典
-	 * TODO 匹配主词典前，先尝试根据词典id获取词典匹配
+	 * TODO 匹配主词典前，先尝试根据词典id获取词典匹配，实现干预
 	 * 
 	 * @return Hit 匹配结果描述
 	 */
@@ -599,11 +596,11 @@ public class Dictionary {
 	}
 
 	/**
-	 * TODO 根据词典id重新加载词典
+	 * TODO 根据词典key重新加载词典
 	 */
-	public void reLoadDict(String dictId, List<String> dictList) {
+	public void reLoadDict(String dictKey, List<String> dictList) {
 		if (dictList != null && !dictList.isEmpty()) {
-			logger.info("重新加载词典id {} 的词典...", dictId);
+			logger.info("重新加载词典...");
 			DictSegment dict = new DictSegment((char) 0);
 			for (String theWord : dictList) {
 				if (theWord != null && !"".equals(theWord.trim())) {
@@ -611,9 +608,27 @@ public class Dictionary {
 					dict.fillSegment(theWord.trim().toLowerCase().toCharArray());
 				}
 			}
-			_DictMap.put(dictId, dict);
-			logger.info("重新加载词典id {} 完毕...", dictId);
+			_DictMap.put(dictKey, dict);
+			logger.info("重新加载词典完毕...");
 		}
+	}
+
+	/**
+	 * TODO 获取url的md5
+	 */
+	public String getMD5(String input) {
+		StringBuilder stringBuilder = new StringBuilder();
+		try {
+			MessageDigest md5 = MessageDigest.getInstance("MD5");
+			byte[] results = md5.digest(input.getBytes(StandardCharsets.UTF_8));
+			for (byte b : results) {
+				stringBuilder.append(String.format("%02x", b));
+			}
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+			logger.error("getMD5 {} error!", input);
+		}
+		return stringBuilder.toString();
 	}
 
 }

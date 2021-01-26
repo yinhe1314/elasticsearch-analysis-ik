@@ -30,6 +30,9 @@ public class Configuration {
 	// TODO 词典url
 	private String dictUrl;
 
+	// TODO 词典key
+	private String dictKey;
+
 	@Inject
 	public Configuration(Environment env,Settings settings) {
 		this.environment = env;
@@ -41,10 +44,12 @@ public class Configuration {
 
 		Dictionary.initial(this);
 
-		// TODO 获取词典url
+		// TODO 获取词典url，初始化词典
 		this.dictUrl = settings.get("dict_url");
-		// TODO 初始化词库
-		Dictionary.getSingleton().initDict(this);
+		if (this.dictUrl != null && !"".equals(this.dictUrl)) {
+			this.dictKey = Dictionary.getSingleton().getMD5(this.dictUrl);
+			Dictionary.getSingleton().initDict(this);
+		}
 	}
 
 	public Path getConfigInPluginDir() {
@@ -84,5 +89,12 @@ public class Configuration {
 	 */
 	public String getDictUrl() {
 		return dictUrl;
+	}
+
+	/**
+	 * TODO 获取词典key
+	 */
+	public String getDictKey() {
+		return dictKey;
 	}
 }

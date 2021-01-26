@@ -1,9 +1,70 @@
 IK Analysis for Elasticsearch
 =============================
-1
+
 The IK Analysis plugin integrates Lucene IK analyzer (http://code.google.com/p/ik-analyzer/) into elasticsearch, support customized dictionary.
 
 Analyzer: `ik_smart` , `ik_max_word` , Tokenizer: `ik_smart` , `ik_max_word`
+
+修改说明
+--------
+1.原本在IK中，所有索引共用一个词典，热更新词库也是对所有的索引有效。
+
+2.修改后，在保证原有功能不变的同时，可在定义分词器时设置词典url来获取词典，实现不同索引使用不同的词典。然后在查询时进行干预，先返回配置词典中的结果。
+
+```
+PUT ik_test_1
+{
+  "settings": {
+    "analysis": {
+      "analyzer": {
+        "my_ik_analyzer": {
+          "tokenizer": "my_ik_tokenizer"
+        }
+      },
+      "tokenizer": {
+        "my_ik_tokenizer": {
+          "type": "ik_max_word",
+          "dict_url": "http://localhost:8123/dict/1"
+        }
+      }
+    }
+  }
+}
+```
+
+3.配置完词典url后，添加词典监控线程到线程池中，然后60秒请求一次，检查是否需要重新加载词典。
+
+4.词典url要求：GET，有个非必填参数`modifyTime`，字符串，格式为`yyyy-MM-dd HH:mm:ss`。
+
+5.词典url实现：没有参数`modifyTime`，返回全量词典；当有参数`modifyTime`，检查是否有新的词典，有的话返回全量词典。
+
+6.不带参数返回结果：
+
+```
+{
+    "message": "ok",
+    "data": {
+        "list": [
+            "美媒",
+            "曝光",
+            "特朗普",
+            "离任后第一天"
+        ],
+        "modifyTime": "2021-01-21 10:58:33"
+    },
+    "code": 0
+}
+```
+
+7.无需更新返回结果：
+
+```
+{
+    "message": "ok",
+    "data": null,
+    "code": 0
+}
+```
 
 Versions
 --------

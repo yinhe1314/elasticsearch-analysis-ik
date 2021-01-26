@@ -41,16 +41,15 @@ public class DictMonitor implements Runnable {
      * 上次更改时间
      */
     private String modifyTime;
-    /**
-     * 词典id
+    /*
+     * 词典key
      */
-    private String dictId;
+    private String dictKey;
 
-    public DictMonitor(String location) {
+    public DictMonitor(String location, String dictKey) {
         this.location = location;
         this.modifyTime = null;
-        String[] urls = location.split("/");
-        this.dictId = urls[urls.length - 1];
+        this.dictKey = dictKey;
     }
 
     public void run() {
@@ -109,7 +108,7 @@ public class DictMonitor implements Runnable {
                 String listStr = dataJSONObject.getString("list");
                 List<String> dictList = JSONArray.parseArray(listStr, String.class);
                 // 重新加载词典，再保存最新时间
-                Dictionary.getSingleton().reLoadDict(dictId, dictList);
+                Dictionary.getSingleton().reLoadDict(dictKey, dictList);
                 modifyTime = dataJSONObject.getString("modifyTime");
             }
         } catch (Exception e) {
