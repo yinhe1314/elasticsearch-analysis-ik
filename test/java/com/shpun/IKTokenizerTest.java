@@ -23,7 +23,7 @@ public class IKTokenizerTest {
                 .put("use_smart", false)
                 .put("enable_lowercase", false)
                 .put("enable_remote_dict", false)
-                .put("dict_url", "http://localhost:9502/search/openapi/sys/searcher/indexAnalyzerItem/list/1")
+                .put("dict_url", "http://localhost:8123/dict/1")
                 .build();
         Configuration configuration = new Configuration(null,settings) ;
         IKAnalyzer ik = new IKAnalyzer(configuration);
