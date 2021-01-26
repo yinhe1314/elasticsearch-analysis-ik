@@ -9,6 +9,8 @@ Analyzer: `ik_smart` , `ik_max_word` , Tokenizer: `ik_smart` , `ik_max_word`
 --------
 参考(https://github.com/PeterMen/elasticsearch-analysis-ik)。
 
+目前仅修改了6.X，7.X类似。
+
 1.原本在IK中，所有索引共用一个词典，热更新词库也是对所有的索引有效。
 
 2.修改后，在保证原有功能不变的同时，可在定义分词器时设置词典url来获取词典，实现不同索引使用不同的词典。然后在查询时进行干预，先返回配置词典中的结果。
