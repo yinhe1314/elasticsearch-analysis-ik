@@ -27,6 +27,8 @@ public class Configuration {
 	//是否启用小写处理
 	private boolean enableLowercase=true;
 
+	// TODO 词典url
+	private String dictUrl;
 
 	@Inject
 	public Configuration(Environment env,Settings settings) {
@@ -39,6 +41,10 @@ public class Configuration {
 
 		Dictionary.initial(this);
 
+		// TODO 获取词典url
+		this.dictUrl = settings.get("dict_url");
+		// TODO 初始化词库
+		Dictionary.getSingleton().initDict(this);
 	}
 
 	public Path getConfigInPluginDir() {
@@ -71,5 +77,12 @@ public class Configuration {
 
 	public boolean isEnableLowercase() {
 		return enableLowercase;
+	}
+
+	/**
+	 * TODO 获取词典url
+	 */
+	public String getDictUrl() {
+		return dictUrl;
 	}
 }

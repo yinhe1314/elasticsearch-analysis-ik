@@ -1,4 +1,6 @@
 grant {
   // needed because of the hot reload functionality
   permission java.net.SocketPermission "*", "connect,resolve";
+  // TODO 添加权限
+  permission java.lang.RuntimePermission "getClassLoader";
 };

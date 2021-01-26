@@ -76,6 +76,9 @@ class AnalyzeContext {
 	//分词器配置项
 	private Configuration cfg;
 
+	// TODO 词典id
+	private String dictId;
+
     public AnalyzeContext(Configuration configuration){
         this.cfg = configuration;
     	this.segmentBuff = new char[BUFF_SIZE];
@@ -84,6 +87,12 @@ class AnalyzeContext {
     	this.orgLexemes = new QuickSortSet();
     	this.pathMap = new HashMap<Integer , LexemePath>();    	
     	this.results = new LinkedList<Lexeme>();
+
+    	// TODO dictId设值
+		if (configuration.getDictUrl() != null) {
+			String[] urls = configuration.getDictUrl().split("/");
+			this.dictId = urls[urls.length - 1];
+		}
     }
     
     int getCursor(){
@@ -392,5 +401,11 @@ class AnalyzeContext {
 
 		}
 	}
-	
+
+	/**
+	 * 获取词典id
+	 */
+	public String getDictId() {
+		return dictId;
+	}
 }

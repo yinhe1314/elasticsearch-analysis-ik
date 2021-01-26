@@ -25,20 +25,16 @@
  */
 package org.wltea.analyzer.dic;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.nio.file.Files;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Path;
-import java.nio.file.SimpleFileVisitor;
 import java.security.AccessController;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.security.PrivilegedAction;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -75,6 +71,9 @@ public class Dictionary {
 
 	private DictSegment _StopWords;
 
+	// TODO 词典map
+	private final Map<String, DictSegment> _DictMap = new ConcurrentHashMap<>(2);
+
 	/**
 	 * 配置对象
 	 */
@@ -104,6 +103,8 @@ public class Dictionary {
 		this.configuration = cfg;
 		this.props = new Properties();
 		this.conf_dir = cfg.getEnvironment().configFile().resolve(AnalysisIkPlugin.PLUGIN_NAME);
+		// TODO 测试类测试用
+//		this.conf_dir = Paths.get("G:\\elasticsearch-6.6.2\\plugins\\elasticsearch-analysis-ik-6.6.2\\config");
 		Path configFile = conf_dir.resolve(FILE_NAME);
 
 		InputStream input = null;
@@ -167,6 +168,23 @@ public class Dictionary {
 					}
 
 				}
+			}
+		}
+	}
+
+	/**
+	 * TODO 初始化词典
+	 */
+	public void initDict(Configuration cfg) {
+		String dictUrl = cfg.getDictUrl();
+		if (dictUrl != null && !"".equals(dictUrl)) {
+			String[] urls = dictUrl.split("/");
+			String id = urls[urls.length - 1];
+			if (!_DictMap.containsKey(id)) {
+				Runnable dictMonitor = new DictMonitor(dictUrl);
+				// 先执行一次获取词库
+				dictMonitor.run();
+				pool.scheduleAtFixedRate(dictMonitor, 10, 60, TimeUnit.SECONDS);
 			}
 		}
 	}
@@ -342,10 +360,17 @@ public class Dictionary {
 
 	/**
 	 * 检索匹配主词典
+	 * TODO 匹配主词典前，先尝试根据词典id获取词典匹配
 	 * 
 	 * @return Hit 匹配结果描述
 	 */
-	public Hit matchInMainDict(char[] charArray, int begin, int length) {
+	public Hit matchInMainDict(String dictId, char[] charArray, int begin, int length) {
+		if (dictId != null && !"".equals(dictId) && _DictMap.containsKey(dictId)) {
+			Hit tmpHit = _DictMap.get(dictId).match(charArray, begin, length);
+			if(tmpHit.isMatch() || tmpHit.isPrefix()) {
+				return tmpHit;
+			}
+		}
 		return singleton._MainDict.match(charArray, begin, length);
 	}
 
@@ -571,6 +596,24 @@ public class Dictionary {
 		_MainDict = tmpDict._MainDict;
 		_StopWords = tmpDict._StopWords;
 		logger.info("重新加载词典完毕...");
+	}
+
+	/**
+	 * TODO 根据词典id重新加载词典
+	 */
+	public void reLoadDict(String dictId, List<String> dictList) {
+		if (dictList != null && !dictList.isEmpty()) {
+			logger.info("重新加载词典id {} 的词典...", dictId);
+			DictSegment dict = new DictSegment((char) 0);
+			for (String theWord : dictList) {
+				if (theWord != null && !"".equals(theWord.trim())) {
+					logger.info(theWord);
+					dict.fillSegment(theWord.trim().toLowerCase().toCharArray());
+				}
+			}
+			_DictMap.put(dictId, dict);
+			logger.info("重新加载词典id {} 完毕...", dictId);
+		}
 	}
 
 }
