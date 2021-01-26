@@ -28,7 +28,7 @@ public class IKTokenizerTest {
         Configuration configuration = new Configuration(null,settings) ;
         IKAnalyzer ik = new IKAnalyzer(configuration);
 
-        String t = "辽宁一超市蔬菜摆放太整齐引围观";
+        String t = "美媒曝光特朗普离任后第一天动态";
         TokenStream tokenStream = ik.tokenStream("", new StringReader(t));
         tokenStream.reset();
         CharTermAttribute termAtt = tokenStream.addAttribute(CharTermAttribute.class);
