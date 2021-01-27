@@ -46,7 +46,6 @@ PUT ik_test_1
 
 ```
 {
-    "message": "ok",
     "data": {
         "list": [
             "美媒",
@@ -55,8 +54,7 @@ PUT ik_test_1
             "离任后第一天"
         ],
         "modifyTime": "2021-01-21 10:58:33"
-    },
-    "code": 0
+    }
 }
 ```
 
@@ -64,9 +62,7 @@ PUT ik_test_1
 
 ```
 {
-    "message": "ok",
-    "data": null,
-    "code": 0
+    "data": null
 }
 ```
 
