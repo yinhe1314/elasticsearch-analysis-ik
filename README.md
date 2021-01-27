@@ -7,7 +7,7 @@ Analyzer: `ik_smart` , `ik_max_word` , Tokenizer: `ik_smart` , `ik_max_word`
 
 修改说明
 --------
-参考( https://github.com/PeterMen/elasticsearch-analysis-ik/ )。
+参考( https://github.com/PeterMen/elasticsearch-analysis-ik )。
 
 该分支版本为6.6.2，6.X修改`pom.xml`中`elasticsearch.version`中版本号重新打包，修改的代码都添加了 **TODO** 标识。
 
