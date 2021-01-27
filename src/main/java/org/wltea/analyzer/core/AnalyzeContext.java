@@ -76,6 +76,9 @@ class AnalyzeContext {
 	//分词器配置项
 	private Configuration cfg;
 
+	// TODO 词典key
+	private String dictKey;
+
     public AnalyzeContext(Configuration configuration){
         this.cfg = configuration;
     	this.segmentBuff = new char[BUFF_SIZE];
@@ -84,6 +87,9 @@ class AnalyzeContext {
     	this.orgLexemes = new QuickSortSet();
     	this.pathMap = new HashMap<Integer , LexemePath>();    	
     	this.results = new LinkedList<Lexeme>();
+
+		// TODO 设值词典key
+		this.dictKey = configuration.getDictKey();
     }
     
     int getCursor(){
@@ -392,5 +398,12 @@ class AnalyzeContext {
 
 		}
 	}
-	
+
+	/**
+	 * TODO 获取词典key
+	 */
+	public String getDictKey() {
+		return dictKey;
+	}
+
 }

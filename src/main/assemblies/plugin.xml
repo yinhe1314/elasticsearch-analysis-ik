@@ -41,5 +41,14 @@
                 <include>org.apache.httpcomponents:httpclient</include>
             </includes>
         </dependencySet>
+        <!--TODO 添加依赖-->
+        <dependencySet>
+            <outputDirectory/>
+            <useProjectArtifact>true</useProjectArtifact>
+            <useTransitiveFiltering>true</useTransitiveFiltering>
+            <includes>
+                <include>com.alibaba:fastjson</include>
+            </includes>
+        </dependencySet>
     </dependencySets>
 </assembly>
