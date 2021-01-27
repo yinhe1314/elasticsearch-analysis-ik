@@ -361,9 +361,9 @@ public class Dictionary {
 	 * 
 	 * @return Hit 匹配结果描述
 	 */
-	public Hit matchInMainDict(String dictId, char[] charArray, int begin, int length) {
-		if (dictId != null && !"".equals(dictId) && _DictMap.containsKey(dictId)) {
-			Hit tmpHit = _DictMap.get(dictId).match(charArray, begin, length);
+	public Hit matchInMainDict(String dictKey, char[] charArray, int begin, int length) {
+		if (dictKey != null && !"".equals(dictKey) && _DictMap.containsKey(dictKey)) {
+			Hit tmpHit = _DictMap.get(dictKey).match(charArray, begin, length);
 			if(tmpHit.isMatch() || tmpHit.isPrefix()) {
 				return tmpHit;
 			}
