@@ -104,7 +104,7 @@ public class Dictionary {
 		this.props = new Properties();
 		this.conf_dir = cfg.getEnvironment().configFile().resolve(AnalysisIkPlugin.PLUGIN_NAME);
 		// TODO 测试类测试用
-//		this.conf_dir = Paths.get("G:\\elasticsearch-6.6.2\\plugins\\elasticsearch-analysis-ik-6.6.2\\config");
+//		this.conf_dir = Paths.get("E:\\IDEA_workspace\\elasticsearch-analysis-ik\\config");
 		Path configFile = conf_dir.resolve(FILE_NAME);
 
 		InputStream input = null;
